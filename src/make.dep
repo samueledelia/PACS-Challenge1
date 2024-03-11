@@ -1,0 +1,2 @@
+main.o: main.cpp minimize_function.hpp
+minimize_function.o: minimize_function.cpp minimize_function.hpp
