@@ -6,7 +6,8 @@
 
 
 std::vector<double> gradient_descent(std::function<double(std::vector<double>)> const &f, std::function<std::vector<double>(std::vector<double>)> const &df,
-                        std::vector<double> const &x0, double const &eps_r, double const &eps_s, unsigned const &k_max, double const &alpha_0, double const &mu)
+                        std::vector<double> const &x0, double const &eps_r, double const &eps_s, unsigned const &k_max, double const &alpha_0, 
+                        double const &mu, int const &stepStrategy)
 {
     auto x_k = x0;          // Initial guess
     unsigned k = 0;         // Maximum number of iterations
@@ -17,7 +18,7 @@ std::vector<double> gradient_descent(std::function<double(std::vector<double>)> 
         auto gradient = df(x_k);          
 
         // Update learning rate (Exponential decay)
-        double alpha_k = alpha_0 * std::exp(mu * k);
+        double alpha_k = step_strategy(stepStrategy,alpha_0,mu,k,f,df,x_k);
 
         // Update variables
         for (size_t i = 0; i < x_k.size(); ++i)
@@ -49,4 +50,38 @@ std::vector<double> gradient_descent(std::function<double(std::vector<double>)> 
     }
 
     return x_k;
+}
+
+double step_strategy(int const &stepStrategy, double const &alpha_0, double const &mu, unsigned const &k,std::function<double(std::vector<double>)> const &f,
+                     std::function<std::vector<double>(std::vector<double>)> const &df, std::vector<double> const &x_k)
+{
+    if(stepStrategy==0)               // Exponential decay
+        return alpha_0 * std::exp(mu * k);
+    else if(stepStrategy==1)          // Inverse decay
+        return alpha_0 / (1 + mu * k);
+    else if(stepStrategy==2){         // Armijo rule
+        double sigma = 0.25;
+        double alpha_k = alpha_0;
+        while(true){
+            // Compute gradient
+            auto gradient = df(x_k);
+            // Armijo rule condition
+            std::vector<double> x_lhs(x_k.size(), 0.0);
+            for (size_t i = 0; i < x_k.size(); ++i)
+                x_lhs[i] =  x_k[i] - alpha_k * gradient[i];
+            double gradient_norm = 0.0;
+            for (size_t i = 0; i < x_k.size(); ++i)
+                gradient_norm += std::pow(gradient[i],2);
+            gradient_norm = std::sqrt(gradient_norm);
+            if((f(x_k)-f(x_lhs))>=(sigma*alpha_k*std::pow(gradient_norm,2)))
+                break;              // Armijo condition is satisfied
+
+            // Update alpha_k for the next iteration
+            alpha_k = alpha_k/2;
+        }
+         return alpha_k;
+    }else{                                      // Error
+        std::cout << "Error: The input number does not correspond to any available step strategy." << std::endl;
+        return 0;
+    }
 }

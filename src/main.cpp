@@ -50,12 +50,14 @@ int main(int argc, char **argv)
     //! \f$ f(x1,x2) = x1*x2 + 4*x1^4 + x2^2 + 3*x1$
     auto f = [](std::vector<double> const &x)
     {  return x[0] * x[1] + 4 * std::pow(x[0],  4) + std::pow(x[1],  2) + 3 * x[0]; };
-    //! \f$ f(x1,x2) = [x2 + 12*x1^3 + 3, x1 + 2*x2 ]$
+    //! \f$ f(x1,x2) = [x2 + 16*x1^3 + 3, x1 + 2*x2 ]$
     auto df = [](std::vector<double> const &x)
-    {  return std::vector<double>{x[1] + 12 * std::pow(x[0], 3) + 3, x[0] + 2 * x[1]}; };
+    {  return std::vector<double>{x[1] + 16 * std::pow(x[0], 3) + 3, x[0] + 2 * x[1]}; };
 
-    std::vector<double> sol = gradient_descent(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu);
+    // COMPUTE THE SOLUTION
+    std::vector<double> sol = gradient_descent(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
 
+    // The minimum computed with Mathematica should be at (x1,x2) = (-0.590551,0.295275)
     std::cout << "Minimum found at: ";
     for (auto const &val : sol)
         std::cout << val << " ";
