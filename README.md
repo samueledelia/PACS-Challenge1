@@ -19,3 +19,8 @@ To run just type:
 make
 ```
 He does the job for you.
+
+### Things to do
+- add Inverse decay, Armijo rule
+- add momentum/heavy-ball method, Nesterov and maybe ADAM optimizer
+- add numerical derivative
