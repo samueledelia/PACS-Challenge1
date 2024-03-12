@@ -1,13 +1,29 @@
-all:
-	g++ -c minimize_function.cpp -fPIC
-	g++ -shared minimize_function.o -o libminimize_function.so
-	g++ main.cpp -o main -Wl,-rpath = /mnt/c/Users/samue/VSCodeProject/challenge-1/src/libminimize_function.so
+# compiling variables
+CXXFLAGS = -std=c++20 -O2 -fPIC
+CPPFLAGS = -DNDEBUG -I${mkEigenInc} -I../include
+LDFLAGS = -L. -Wl,-rpath=${PWD}
+LDLIBS = 
 
-clean:
-	rm minimize_function.o libminimize_function.so
+# files
 
+# source file
+SRCS = $(wildcard *.cpp)
+# object file from sources
+OBJS = $(SRCS:.cpp=.o)
+# all headers
+HAEDS =$(wildcard *.hpp)
+# exe main
+EXEC = main
 
-distclean:
-	$(MAKE) clean
-	$(RM) -f ./doc $(DEPEND)
-	$(RM) *.out *.bak *~
+.phony = all clean 
+
+all : $(SRCS) $(OBJS) $(EXEC)
+
+$(EXEC) : $(OBJS)
+	$(CXX) $(LDFLAGS) $(OBJS) -o $(EXEC) $(LDLIBS)
+
+$(OBJS) : $(SRCS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRCS)
+
+clean :
+	$(RM) $(OBJS) $(EXEC)

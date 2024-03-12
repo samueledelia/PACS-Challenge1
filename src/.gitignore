@@ -1,12 +1,24 @@
 .vscode
+
+# makefile aux
+*.dep
+
+# backup files
+*~
+
 # Prerequisites
 *.d
+
+# simulation results
+#*.dat
 
 # Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
+main
+*.s
 
 # Precompiled Headers
 *.gch
