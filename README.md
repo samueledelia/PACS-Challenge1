@@ -27,8 +27,14 @@ make
 It handles the process for you seamlessly.
 
 ### Things to do
--If you want to give the user the choice of different strategies for the computation of αk, remember that the use of an if statement inside a loop is computationally inefficient.
+- If you want to give the user the choice of different strategies for the computation of αk, remember that the use of an if statement inside a loop is computationally inefficient.
 Since we are not dealing with classes and polymorphism yet, a possibility (but then the choice cannot be made runtime) is to create a function template with an enumerator as
 template parameter, and then select the choice with if constexpr. In this case, you do not loose efficiency at the price of less flexibility
-- add momentum/heavy-ball method, Nesterov and maybe ADAM optimizer
+- Add Nesterov and ADAM optimizer
 - add numerical derivative
+- You may want to try to define the function and the derivative using the muParser facility and read the functions from a file. You loose efficiency but gain in flexibility. It is more complex for the derivative (for vector functions you need muParserX).
+- Implement more functions (norm, conditions check ,...)
+
+### Limitations of the project
+- large/medium computational time
+- I currently utilize ```std::vector``` for handling vector quantities, but it would likely be more advantageous to leverage the ```Eigen``` library instead
