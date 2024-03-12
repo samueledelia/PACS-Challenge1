@@ -19,11 +19,11 @@ struct parameters
   //! Second longitudinal dimension
   double mu = 0.002;
   //! Dirichlet condition
-  double solverType = 0;
+  int solverType = 0;
   //! External temperature
-  double stepStrategy = 0;
+  int stepStrategy = 0;
   //! Conductivity
-  double gradientComp = 0;
+  int gradientComp = 0;
 };
 //! Prints parameters
 std::ostream &operator<<(std::ostream &, const parameters &);

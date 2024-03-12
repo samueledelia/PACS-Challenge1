@@ -55,7 +55,15 @@ int main(int argc, char **argv)
     {  return std::vector<double>{x[1] + 16 * std::pow(x[0], 3) + 3, x[0] + 2 * x[1]}; };
 
     // COMPUTE THE SOLUTION
-    std::vector<double> sol = gradient_descent(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
+    std::vector<double> sol = {};
+    if(solverType==0)
+        sol = gradient_descent(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
+    else if(solverType==1)
+        sol = momentum(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
+    else{
+        std::cout << "Error: The input number does not correspond to any available minimization strategy." << std::endl;
+        return 0;
+    }
 
     // The minimum computed with Mathematica should be at (x1,x2) = (-0.590551,0.295275)
     std::cout << "Minimum found at: ";

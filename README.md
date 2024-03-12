@@ -16,7 +16,7 @@ git clone git@github.com:samueledelia/PACS-Challenge1.git
 ```
 You have the option to adjust parameters related to the minimization technique and select your preferred technique in the ```parameters.pot``` file. To evaluate the performance of the code, we test it on the following reference function:
 
-\[f(x_1,x_2) = x_1 \cdot x_2 + 4 \cdot x_1^4 + x_2^2 + 3 \cdot x_1\]
+$$f(x_1,x_2) = x_1 \cdot x_2 + 4 \cdot x_1^4 + x_2^2 + 3 \cdot x_1$$
 
 You can modify this function, but note that it is not imported with the ```parameters.pot``` file; you'll need to directly modify the ```main.cpp``` file.
 
@@ -27,5 +27,8 @@ make
 It handles the process for you seamlessly.
 
 ### Things to do
+-If you want to give the user the choice of different strategies for the computation of αk, remember that the use of an if statement inside a loop is computationally inefficient.
+Since we are not dealing with classes and polymorphism yet, a possibility (but then the choice cannot be made runtime) is to create a function template with an enumerator as
+template parameter, and then select the choice with if constexpr. In this case, you do not loose efficiency at the price of less flexibility
 - add momentum/heavy-ball method, Nesterov and maybe ADAM optimizer
 - add numerical derivative
