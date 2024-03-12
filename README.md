@@ -15,7 +15,9 @@ No external libraries are required. To clone the repository locally, run the fol
 git clone git@github.com:samueledelia/PACS-Challenge1.git
 ```
 You have the option to adjust parameters related to the minimization technique and select your preferred technique in the ```parameters.pot``` file. To evaluate the performance of the code, we test it on the following reference function:
-$f(x_1,x_2) = x_1 \cdot x_2 + 4 \cdot x_1^4 + x_2^2 + 3 \cdot x_1$
+
+\[f(x_1,x_2) = x_1 \cdot x_2 + 4 \cdot x_1^4 + x_2^2 + 3 \cdot x_1\]
+
 You can modify this function, but note that it is not imported with the ```parameters.pot``` file; you'll need to directly modify the ```main.cpp``` file.
 
 To execute the code, simply run:
