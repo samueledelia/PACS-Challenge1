@@ -1,10 +1,9 @@
 # compiling variables
 CXXFLAGS = -std=c++20 -O2 -fPIC
-CPPFLAGS = -DNDEBUG -I${mkEigenInc} -I../include
+CPPFLAGS = -DNDEBUG -I../include
 LDFLAGS = -L. -Wl,-rpath=${PWD}
 LDLIBS = 
 
-# files
 
 # source file
 SRCS = $(wildcard *.cpp)

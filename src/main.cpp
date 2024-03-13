@@ -7,7 +7,6 @@
 #include <utility>
 #include <cmath>
 
-
 void printHelp()
 {
     std::cout
@@ -16,7 +15,6 @@ void printHelp()
     std::cout << "-h this help" << std::endl;
     std::cout << "-v verbose output" << std::endl;
 }
-
 
 
 int main(int argc, char **argv)
@@ -50,7 +48,8 @@ int main(int argc, char **argv)
 
 
     // PARAMETERS RELATED TO REFERNCE FUNCTION
-    std::vector<double> x0{0.,0.}; // starting point
+    // Starting point
+    std::vector<double> x0{0.,0.}; 
     //! \f$ f(x1,x2) = x1*x2 + 4*x1^4 + x2^2 + 3*x1$
     auto f = [](std::vector<double> const &x)
     {  return x[0] * x[1] + 4 * std::pow(x[0],  4) + std::pow(x[1],  2) + 3 * x[0]; };
@@ -73,6 +72,8 @@ int main(int argc, char **argv)
         sol = nesterov(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
     else if(solverType==3)                                                   // ADAM method
         sol = adam(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
+    else if(solverType==4)                                                   // AdaMax method
+        sol = adamax(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
     else{                                                                    // No minimization strategy
         std::cout << "Error: The input number does not correspond to any available minimization strategy." << std::endl;
         return 0;

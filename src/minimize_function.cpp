@@ -12,6 +12,7 @@ std::vector<double> gradient_descent(std::function<double(std::vector<double>)> 
     auto x_k = x0;                                      // Initial guess
     unsigned k = 0;                                     // Maximum number of iterations
     std::vector<double> x_new(x_k.size(), 0.0);         // x_(k+1) Value
+    bool check = true;                                 // Check stopping condition variable
 
     while(true){
         // Calculate gradient at current point
@@ -23,28 +24,18 @@ std::vector<double> gradient_descent(std::function<double(std::vector<double>)> 
         // Update variables
         for (size_t i = 0; i < x_k.size(); ++i)
             x_new[i] = x_k[i] - alpha_k * gradient[i];
-            
         
-        // Check stopping conditions
-        double step_length = 0.0;
-        for (size_t i = 0; i < x_k.size(); ++i){
-            step_length += std::pow((x_new[i] - x_k[i]),2);
-        }
-        step_length = std::sqrt(step_length);
-        double residual = std::abs(f(x_new) - f(x_k));
-/*
-        std::cout << "x_k value: ";
-        for (auto const &val : x_k) std::cout << val << " ";
-        std::cout << std::endl;
-*/
+        check = check_stopping_conds(f, x_k, x_new, k, eps_r, eps_s, k_max);
+
         // Update x for next iteration
         x_k = x_new;
 
-        if (step_length < eps_s || residual < eps_r || k >= k_max) {
-            std::cout << "Stopping condition met" << std::endl;
-            break; // Exit loop
-        }
-
+        std::cout << "x_k value: ";
+        for (auto const &val : x_k) std::cout << val << " ";
+        std::cout << std::endl;
+        
+        if(!check)break;
+        
         // Increment iteration count
         k++;                 
     }
@@ -59,6 +50,7 @@ std::vector<double> momentum(std::function<double(std::vector<double>)> const &f
     unsigned k = 0;                                     // Maximum number of iterations
     std::vector<double> x_new(x_k.size(), 0.0);         // x_(k+1) Value
     std::vector<double> d_k(x_k.size(), 0.0);           // d_k is the second parameter to be tuned in this method
+    bool check = true;                                 // Check stopping condition variable
 
     // Let's initialize d_0
     for (size_t i = 0; i < df(x0).size(); ++i)
@@ -78,21 +70,12 @@ std::vector<double> momentum(std::function<double(std::vector<double>)> const &f
         for (size_t i = 0; i < d_k.size(); ++i)
             d_k[i] = (1 - alpha_k) * d_k[i] - alpha_k * df(x_new)[i];
 
-        // Check stopping conditions
-        double step_length = 0.0;
-        for (size_t i = 0; i < x_k.size(); ++i){
-            step_length += std::pow((x_new[i] - x_k[i]),2);
-        }
-        step_length = std::sqrt(step_length);
-        double residual = std::abs(f(x_new) - f(x_k));
+        check = check_stopping_conds(f, x_k, x_new, k, eps_r, eps_s, k_max);
         
         // Update x for next iteration
         x_k = x_new;
 
-        if (step_length < eps_s || residual < eps_r || k >= k_max) {
-            std::cout << "Stopping condition met" << std::endl;
-            break; // Exit loop
-        }
+        if(!check)break;
 
         // Increment iteration count
         k++;  
@@ -109,7 +92,7 @@ std::vector<double> nesterov(std::function<double(std::vector<double>)> const &f
     unsigned k = 0;                                     // Maximum number of iterations
     std::vector<double> x_new(x_k.size(), 0.0);         // x_(k+1) Value
     std::vector<double> y(x_k.size(), 0.0);             // y is the second parameter to be tuned in this method
-
+    bool check = true;                                 // Check stopping condition variable
 
     while(true){
         // Calculate gradient at current point
@@ -125,22 +108,13 @@ std::vector<double> nesterov(std::function<double(std::vector<double>)> const &f
         for (size_t i = 0; i < x_k.size(); ++i)
             x_new[i] = y[i] - alpha_k * gradient[i];
         
-        // Check stopping conditions
-        double step_length = 0.0;
-        for (size_t i = 0; i < x_k.size(); ++i){
-            step_length += std::pow((x_new[i] - x_k[i]),2);
-        }
-        step_length = std::sqrt(step_length);
-        double residual = std::abs(f(x_new) - f(x_k));
+        check = check_stopping_conds(f, x_k, x_new, k, eps_r, eps_s, k_max);
         
-        // Update x's for next iteration
+        // Update x for next iteration
         x_old = x_k;
         x_k = x_new;
 
-        if (step_length < eps_s || residual < eps_r || k >= k_max) {
-            std::cout << "Stopping condition met" << std::endl;
-            break; // Exit loop
-        }
+        if(!check)break;
 
         // Increment iteration count
         k++;  
@@ -156,7 +130,7 @@ std::vector<double> adam(std::function<double(std::vector<double>)> const &f, st
 {
     auto x_k = x0;                                      // Initial guess
     double beta_1 = 0.9;                                // Parameter that controls the exponentical decay for the first moment
-    double beta_2 = 0.999;                              // Parameter that controls the exponentical decay for the second moment
+    double beta_2 = 0.99;                               // Parameter that controls the exponentical decay for the second moment
     unsigned k = 0;                                     // Maximum number of iterations
     double eps = 1.e-8;                                 // arbitrary small number
     std::vector<double> x_new(x_k.size(), 0.0);         // x_(k+1) Value
@@ -164,6 +138,7 @@ std::vector<double> adam(std::function<double(std::vector<double>)> const &f, st
     std::vector<double> v_k(x_k.size(), 0.0);           // Initialize second moment
     std::vector<double> m_k_hat(x_k.size(), 0.0);       // Initialize bias-corrected first moment estimate
     std::vector<double> v_k_hat(x_k.size(), 0.0);       // Initialize bias-corrected second moment estimate
+    bool check = true;                                  // Check stopping condition variable
 
     while(true){
         // Calculate gradient at current point
@@ -188,21 +163,59 @@ std::vector<double> adam(std::function<double(std::vector<double>)> const &f, st
         for (size_t i = 0; i < x_k.size(); ++i)
             x_new[i] = x_k[i] - alpha_k * m_k_hat[i]/(std::sqrt(v_k_hat[i])+eps);
         
-        // Check stopping conditions
-        double step_length = 0.0;
-        for (size_t i = 0; i < x_k.size(); ++i){
-            step_length += std::pow((x_new[i] - x_k[i]),2);
-        }
-        step_length = std::sqrt(step_length);
-        double residual = std::abs(f(x_new) - f(x_k));
-
+        check = check_stopping_conds(f, x_k, x_new, k, eps_r, eps_s, k_max);
+        
         // Update x for next iteration
         x_k = x_new;
 
-        if (step_length < eps_s || residual < eps_r || k >= k_max) {
-            std::cout << "Stopping condition met" << std::endl;
-            break; // Exit loop
-        }
+        if(!check)break;
+
+        // Increment iteration count
+        k++;                 
+    }
+
+    return x_k;
+}
+
+//! It evaluates the minimun of the function using the AdaMax method
+std::vector<double> adamax(std::function<double(std::vector<double>)> const &f, std::function<std::vector<double>(std::vector<double>)> const &df,
+                        std::vector<double> const &x0, double const &eps_r, double const &eps_s, unsigned const &k_max, double const &alpha_0, 
+                        double const &mu,int const &stepStrategy)
+{
+    auto x_k = x0;                                      // Initial guess
+    double beta_1 = 0.9;                                // Parameter that controls the exponentical decay for the first moment
+    double beta_2 = 0.99;                               // Parameter that controls the exponentical decay for the second moment
+    unsigned k = 0;                                     // Maximum number of iterations
+    double eps = 1.e-8;                                 // arbitrary small number
+    std::vector<double> x_new(x_k.size(), 0.0);         // x_(k+1) Value
+    std::vector<double> m_k(x_k.size(), 0.0);           // Initialize first moment
+    std::vector<double> u_k(x_k.size(), 0.0);           // Initialize the exponentially weighted infinity norm
+    bool check = true;                                  // Check stopping condition variable
+
+    while(true){
+        // Calculate gradient at current point
+        auto gradient = df(x_k);          
+
+        // Update learning rate (Exponential decay)
+        double alpha_k = step_strategy(stepStrategy,alpha_0,mu,k,f,df,x_k);
+
+        // Update variables
+        for (size_t i = 0; i < x_k.size(); ++i)
+            m_k[i] = beta_1 * m_k[i] + (1 - beta_1) * gradient[i];
+        
+        for (size_t i = 0; i < x_k.size(); ++i)
+            u_k[i] = std::max(beta_2 * u_k[i],std::abs(gradient[i]));
+        
+        
+        for (size_t i = 0; i < x_k.size(); ++i)
+            x_new[i] = x_k[i] - (alpha_k / (1 - std::pow(beta_1,k+1))) * (m_k[i]/(u_k[i]+eps));
+        
+        check = check_stopping_conds(f, x_k, x_new, k, eps_r, eps_s, k_max);
+        
+        // Update x for next iteration
+        x_k = x_new;
+
+        if(!check)break;
 
         // Increment iteration count
         k++;                 
@@ -243,4 +256,23 @@ double step_strategy(int const &stepStrategy, double const &alpha_0, double cons
         std::cout << "Error: The input number does not correspond to any available step strategy." << std::endl;
         return 0;
     }
+}
+
+bool check_stopping_conds(std::function<double(std::vector<double>)> const &f, std::vector<double> const &x_k, std::vector<double> const &x_new, unsigned const &k,
+                        double const &eps_r, double const &eps_s, unsigned const &k_max)
+{
+    bool check = true;
+    // Check stopping conditions
+    double step_length = 0.0;
+    for (size_t i = 0; i < x_k.size(); ++i){
+        step_length += std::pow((x_new[i] - x_k[i]),2);
+    }
+    step_length = std::sqrt(step_length);
+    double residual = std::abs(f(x_new) - f(x_k));
+
+    if (step_length < eps_s || residual < eps_r || k >= k_max) {
+        std::cout << "Stopping condition met" << std::endl;
+        check = false;
+    }
+    return check;
 }
