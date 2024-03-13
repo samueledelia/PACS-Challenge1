@@ -30,10 +30,10 @@ It handles the process for you seamlessly.
 - If you want to give the user the choice of different strategies for the computation of αk, remember that the use of an if statement inside a loop is computationally inefficient.
 Since we are not dealing with classes and polymorphism yet, a possibility (but then the choice cannot be made runtime) is to create a function template with an enumerator as
 template parameter, and then select the choice with if constexpr. In this case, you do not loose efficiency at the price of less flexibility
-- Add Nesterov and ADAM optimizer
 - add numerical derivative
 - You may want to try to define the function and the derivative using the muParser facility and read the functions from a file. You loose efficiency but gain in flexibility. It is more complex for the derivative (for vector functions you need muParserX).
 - Implement more functions (norm, conditions check ,...)
+- Add gnuplot
 
 ### Limitations of the project
 - large/medium computational time
