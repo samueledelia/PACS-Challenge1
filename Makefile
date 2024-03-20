@@ -1,14 +1,11 @@
 # compiling variables
 CXXFLAGS = -std=c++20 -O2 -fPIC
-CPPFLAGS = -DNDEBUG -I../include
+CPPFLAGS = -DNDEBUG -Iinclude
 LDFLAGS = -L. -Wl,-rpath=${PWD}
 LDLIBS = 
-TARGET = main
-
-
 
 # source file
-SRCS = $(wildcard *.cpp)
+SRCS = $(wildcard src/*.cpp)
 # object file from sources
 OBJS = $(SRCS:.cpp=.o)
 # all headers
@@ -16,16 +13,18 @@ HAEDS =$(wildcard *.hpp)
 # exe main
 EXEC = main
 
+INCLUDE_DIR = include
+
 .phony = all clean 
 
 #all : $(SRCS) $(OBJS) $(EXEC)
-all: $(TARGET)
+all: $(EXEC)
 
 $(EXEC) : $(OBJS)
-	$(CXX) $(LDFLAGS) $(OBJS) -o $(EXEC) $(LDLIBS)
+	$(CXX) $(CXXFLAGS) -o $(EXEC) $(OBJS) $(CPPFLAGS)
 
-$(OBJS) : $(SRCS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRCS)
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $< -I$(INCLUDE_DIR)
 
 clean:
-	$(RM) $(OBJS) $(EXEC) $(TARGET)
+	rm -f $(OBJS) $(EXEC)
