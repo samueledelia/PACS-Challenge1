@@ -24,5 +24,5 @@ $(EXEC) : $(OBJS)
 $(OBJS) : $(SRCS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRCS)
 
-clean :
+clean:
 	$(RM) $(OBJS) $(EXEC)

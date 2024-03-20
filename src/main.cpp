@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include <cmath>
+#include <iomanip>
 
 void printHelp()
 {
@@ -100,7 +101,7 @@ int main(int argc, char **argv)
     // The minimum point computed with Mathematica is (x1,x2) = (-0.590551,0.295275)
     std::cout << "Minimum found at: ";
     for (auto const &val : sol)
-        std::cout << val << " ";
+        std::cout << std::fixed << std::setprecision(15) << val << " ";
     std::cout << std::endl;
 
     return 0;
