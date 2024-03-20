@@ -1,9 +1,10 @@
-#include "minimize_function.hpp"
+#include "utils.hpp"
 #include "readParameters.hpp"
 #include "GetPot.hpp"
 #include <iostream>
 #include <vector>
 #include <functional>
+#include <memory>
 #include <utility>
 #include <cmath>
 
@@ -52,33 +53,49 @@ int main(int argc, char **argv)
     std::vector<double> x0{0.,0.}; 
     //! \f$ f(x1,x2) = x1*x2 + 4*x1^4 + x2^2 + 3*x1$
     auto f = [](std::vector<double> const &x)
-    {  return x[0] * x[1] + 4 * std::pow(x[0],  4) + std::pow(x[1],  2) + 3 * x[0]; };
+    {  return x[0] * x[1] + 4 * x[0] * x[0] * x[0] * x[0] + x[1] * x[1] + 3 * x[0]; };
     //! \f$ f(x1,x2) = [x2 + 16*x1^3 + 3, x1 + 2*x2 ]$
     auto df = [](std::vector<double> const &x)
-    {  return std::vector<double>{x[1] + 16 * std::pow(x[0], 3) + 3, x[0] + 2 * x[1]}; };
+    {  return std::vector<double>{x[1] + 16 * x[0] * x[0] * x[0] + 3, x[0] + 2 * x[1]}; };
 
     // COMPUTE THE SOLUTION
     std::vector<double> sol = {};
-    if(solverType==0)                                                        // Gradient descent
-        sol = gradient_descent(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
-    else if(solverType==1){                                                 // Momentum/Heavy-ball method
-         if(stepStrategy==2){
-            std::cout << "Error: We cannot apply Momentum method and Armijo rule since the direction d_k cannot be guaranteed to be a descent direction." << std::endl;
-            return 0;
-        }
-        sol = momentum(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
-    }
-    else if(solverType==2)                                                   // Nesterov method
-        sol = nesterov(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
-    else if(solverType==3)                                                   // ADAM method
-        sol = adam(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
-    else if(solverType==4)                                                   // AdaMax method
-        sol = adamax(f, df, x0, eps_r, eps_s, k_max, alpha_0, mu, stepStrategy);
-    else{                                                                    // No minimization strategy
-        std::cout << "Error: The input number does not correspond to any available minimization strategy." << std::endl;
+    std::unique_ptr<StepStrategy> strategy;
+    if (stepStrategy == 0)
+        strategy = std::make_unique<ExponentialDecay>();
+    else if (stepStrategy == 1)
+        strategy = std::make_unique<InverseDecay>();
+    else if (stepStrategy == 2)
+        strategy = std::make_unique<ArmijoRule>();
+    else
+    {
+        std::cerr << "Error: Invalid step strategy specified." << std::endl;
         return 0;
     }
 
+
+    if (solverType == 0) // Gradient descent
+        sol = gradient_descent(f, df, x0, param, *strategy);
+    else if (solverType == 1) // Momentum/Heavy-ball method
+    {
+        if (stepStrategy == 2)
+        {
+            std::cout << "Error: We cannot apply Momentum method and Armijo rule since the direction d_k cannot be guaranteed to be a descent direction." << std::endl;
+            return 0;
+        }
+        sol = momentum(f, df, x0, param, *strategy);
+    }
+    else if (solverType == 2) // Nesterov method
+        sol = nesterov(f, df, x0, param, *strategy);
+    else if (solverType == 3) // ADAM method
+        sol = adam(f, df, x0, param, *strategy);
+    else if (solverType == 4) // AdaMax method
+        sol = adamax(f, df, x0, param, *strategy);
+    else
+    { // No minimization strategy
+        std::cout << "Error: The input number does not correspond to any available minimization strategy." << std::endl;
+        return 0;
+    }
 
     // The minimum point computed with Mathematica is (x1,x2) = (-0.590551,0.295275)
     std::cout << "Minimum found at: ";

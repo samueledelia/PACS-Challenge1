@@ -25,8 +25,13 @@ To execute the code, simply run:
 make
 ```
 It handles the process for you seamlessly.
-
+If you change some parameters, just use:
+```shell
+make clean; make
+```
 ### Things to do
+- Check that alpha_k is < 1
+- is Armijo rule really a good step strategy??? Why???
 - If you want to give the user the choice of different strategies for the computation of αk, remember that the use of an if statement inside a loop is computationally inefficient.
 Since we are not dealing with classes and polymorphism yet, a possibility (but then the choice cannot be made runtime) is to create a function template with an enumerator as
 template parameter, and then select the choice with if constexpr. In this case, you do not loose efficiency at the price of less flexibility

@@ -1,28 +1,25 @@
 #ifndef HH_Parameters_HH
 #define HH_Parameters_HH
 #include <iosfwd>
-/*!
- * A structure holding the parameters
- *
- * It is an aggregate, you can use structured binding and brace initialization
- */
+
+
 struct parameters
 {
-  //! max number of iteration for Gauss-Siedel
+  //! Max number of iterations
   int k_max = 1000;
-  //! Tolerance for stopping criterion
+  //! Tolerance on the residual
   double eps_r = 1.e-6;
-  //! Bar length
+  //! Tolerance on the step length
   double eps_s = 1.e-6;
-  //! First longitudinal dimension
+  //! Initial learning rate
   double alpha_0 = 0.005;
-  //! Second longitudinal dimension
+  //! Exponential/inverse decay parameter 
   double mu = 0.002;
-  //! Dirichlet condition
+  //! Solver type: 0 Gradient descent 1 momentum 2 Nesterov 3 ADAM 4 AdaMax
   int solverType = 0;
-  //! External temperature
+  //! Step strategy: 0 Exponential decay 1 Inverse decay 2 Armijo rule
   int stepStrategy = 0;
-  //! Conductivity
+  //! Gradient computation: 0 analytical 1 numerical
   int gradientComp = 0;
 };
 //! Prints parameters
