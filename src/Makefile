@@ -3,6 +3,8 @@ CXXFLAGS = -std=c++20 -O2 -fPIC
 CPPFLAGS = -DNDEBUG -I../include
 LDFLAGS = -L. -Wl,-rpath=${PWD}
 LDLIBS = 
+TARGET = main
+
 
 
 # source file
@@ -16,7 +18,8 @@ EXEC = main
 
 .phony = all clean 
 
-all : $(SRCS) $(OBJS) $(EXEC)
+#all : $(SRCS) $(OBJS) $(EXEC)
+all: $(TARGET)
 
 $(EXEC) : $(OBJS)
 	$(CXX) $(LDFLAGS) $(OBJS) -o $(EXEC) $(LDLIBS)
@@ -25,4 +28,4 @@ $(OBJS) : $(SRCS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(SRCS)
 
 clean:
-	$(RM) $(OBJS) $(EXEC)
+	$(RM) $(OBJS) $(EXEC) $(TARGET)
