@@ -5,11 +5,11 @@ eps_r=1.e-6
 # Tolerance on the step length
 eps_s=1.e-6
 # Initial learning rate
-alpha_0=0.5       
+alpha_0=0.01       
 # Exponential/inverse decay parameter 
-mu=0.03
+mu=0.02
 # Solver type: 0 Gradient descent 1 momentum 2 Nesterov 3 ADAM 4 AdaMax
-solverType=0
+solverType=4
 # Step strategy: 0 Exponential decay 1 Inverse decay 2 Armijo rule
 stepStrategy=2
 # Gradient computation: 0 analytical 1 numerical

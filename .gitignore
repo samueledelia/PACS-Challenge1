@@ -1,7 +1,7 @@
 .vscode
 
 # makefile aux
-make.dep
+*.dep
 
 # backup files
 *~
