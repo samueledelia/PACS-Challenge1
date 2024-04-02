@@ -1,0 +1,19 @@
+README could be improved a bit.
+  - specify more information on the parameters.pot file.
+  - make the overall README a bit more verbose.
+  - last comments are irrelevant: clearly if I want to recompile, I can just clean and recompile.
+
+
+Why do you have a chunk of code in the main that is useless? Where you "copy" each parameters.
+
+Why do you have a make.dep file?
+
+Although employing smart pointer could be appreciated to instanciate all the parameters and so on, I think that for handling parameters there is no need to be so much sophisticated.
+
+Maybe an enumclass would have been more elegant
+
+while(true) is not a good coding practice!!
+
+ADAM and AdaMax where also implemented. Nice!
+
+Overall, good job. I can see you made a lot of commits and hard work!
